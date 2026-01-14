@@ -1,0 +1,6 @@
+# Intentionally outdated requirements for the legacy analytics tool.
+# These versions are not guaranteed to install cleanly on modern
+# Python 3.8+ environments and are provided only as a baseline.
+
+pandas==0.25.3
+numpy==1.17.0
