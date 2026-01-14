@@ -1,0 +1,36 @@
+**Role & Objective**
+You are a senior prompt engineer responsible for modernizing a small Python analytics project so it installs cleanly on Windows 10+ with Python 3.8+, gains automated tests, and retains the original CSV statistics behavior (mean, median, standard deviation) implemented in legacy_analytics/analytics_legacy.py.
+
+**Inputs & Context**
+- Repository contents: legacy_analytics/__init__.py, legacy_analytics/analytics_legacy.py (baseline analytics logic), run_legacy_tests.py (legacy smoke test), requirements_legacy.txt (outdated pins).
+- analytics_legacy.py currently uses pandas/numpy for CSV-based stats and is relied upon by existing callers; its semantics are correct and must not change.
+- run_legacy_tests.py performs a few hard-coded checks but is not an automated suite.
+- Environment: fresh Windows shell with no preinstalled scientific libraries.
+
+**Step-by-Step Instructions**
+1. Inspect legacy_analytics/analytics_legacy.py to understand its CSV parsing, mean/median/stddev calculations, and any pandas dependencies without altering observable outputs.
+2. Derive a modern dependency set that preserves behavior (e.g., pandas, numpy, pytest) and author a new requirements.txt with installable versions for Python 3.8+; leave requirements_legacy.txt untouched for reference.
+3. Document Windows virtual-environment creation and dependency installation steps (python -m venv .venv, .\.venv\Scripts\Activate.ps1, pip install -r requirements.txt) in README.md along with a business-level project summary.
+4. Port the run_legacy_tests.py smoke checks into tests/ (e.g., tests/test_analytics.py) using pytest or unittest so they cover the same numeric expectations; create the tests directory if missing.
+5. Implement run_tests.py at the repo root so `python run_tests.py` prefers pytest discovery under tests/ when pytest imports successfully, otherwise falls back to unittest discovery; propagate the called framework’s exit code.
+6. Run `python run_tests.py` in the current workspace; if the command fails, adjust code, dependencies, or tests based on the terminal output and rerun until the command exits with code 0.
+7. Ensure analytics_legacy.py remains importable by existing code (do not delete or rename it), and any helper modules you add stay compatible with its public API.
+
+**Output Specification**
+- Summarize the files you created or modified (requirements.txt, README.md, tests/*, run_tests.py, any other touched files).
+- Explain briefly how analytics semantics remain unchanged despite the maintenance work.
+- Report the exact Windows command used to execute tests (`python run_tests.py`), include the terminal output summary, and state whether tests passed.
+
+**Constraints & Preferences**
+- Preserve numerical results exactly for identical CSV inputs; treat deviations as bugs.
+- Use only the Python standard library plus dependencies declared in requirements.txt.
+- Ensure all scripts run via plain `python` on Windows (no bash-specific features).
+- Maintain readability with minimal yet sufficient comments; prefer ASCII text.
+
+**Quality Gates**
+- `python run_tests.py` must pass successfully on a clean environment with dependencies from requirements.txt.
+- README.md must clearly describe project purpose, environment setup, dependency installation, and test execution.
+- Tests in tests/ must fail if analytics outputs change unexpectedly.
+
+**Critical Instructions**
+Never alter the observable analytics behavior, and do not finish until `python run_tests.py` completes with all tests passing and its success confirmed in your final report.
