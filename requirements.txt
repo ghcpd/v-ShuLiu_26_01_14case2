@@ -1,0 +1,7 @@
+# Modern, installable pins for Python 3.8+
+# - numpy 1.23.x is the last series supporting Python 3.8
+# - pandas 1.5.x supports Python 3.8 and preserves CSV/astype(float) behavior
+# - pytest is optional (tests also written with unittest)
+numpy==1.23.5
+pandas==1.5.3
+pytest==7.2.2
