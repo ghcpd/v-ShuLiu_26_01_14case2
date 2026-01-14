@@ -1,4 +1,4 @@
-   # Legacy Analytics Dependency Maintenance Task
+# Legacy Analytics Dependency Maintenance Task
 
    ## Overview
 
