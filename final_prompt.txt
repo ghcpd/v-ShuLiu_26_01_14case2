@@ -1,0 +1,100 @@
+【Role & Objective】
+You are a senior Prompt Engineer. In a single interaction, read the attached "conversation log" and generate a **final English prompt** that can reproduce the original multi-turn results in a single turn, based solely on all user input blocks starting with "User:". Write this to a file named `final_prompt.txt`.
+
+【Input Sources】
+The conversation log is provided through one of the following methods:
+- Uploaded as an attachment;
+- Pasted directly below this prompt;
+- Specified file path to the conversation log.
+
+【Input Conventions (Strict, Block-Level Parsing)】
+1) **Block Structure**: Conversations consist of message blocks, each starting with a role marker:
+   - `User:` → User input block start (the ONLY blocks to process)
+   - Other role blocks (e.g., `GitHub Copilot:`, `Assistant:`, `System:`, etc.) → Must be ignored
+   
+2) **Role Marker Recognition Rules**:
+   - Must be at the beginning of a line (zero or more spaces at line start, followed by role marker, then colon)
+   - User block recognition regex: `^\s*User:\s*`
+   - Non-User blocks (any other role markers) are considered blocks to ignore
+   - Role marker text within code blocks, quote blocks, or other contexts is not considered a role marker
+   
+3) **Block Scope**:
+   - Starts from the line with the role marker (including content after the role marker on that line)
+   - Extends to the next role marker line (exclusive) or end of document
+   
+4) **Ignore Rules**:
+   - **Completely ignore** all content in non-`User:` blocks (including but not limited to `GitHub Copilot:`, `Assistant:`, `System:`, etc.)
+   - Do not read, summarize, quote, or borrow any information from non-User blocks
+   
+5) **User Block Filtering Rules**:
+   The following types of User blocks should be **completely ignored** and not included in the final prompt:
+   - Flow control commands (e.g., `@agent Continue`, `Continue to iterate?`, `继续`, `请继续`, etc.)
+   - Confirmation commands (e.g., `Yes`, `OK`, `确认`, `同意`, etc.)
+   - Abort commands (e.g., `Stop`, `取消`, `停止`, etc.)
+   - Blocks containing only the above commands (minor context references allowed, e.g., `@agent Continue: "xxx"`)
+   
+6) **Document Header Processing**: If the first line lacks a role marker, treat the first block as a User block.
+
+【Conflict Resolution】
+- If the same requirement has contradictions or modifications across multiple User blocks, use the **last occurring** version
+- If the user explicitly revokes or negates a previous requirement, remove that requirement from the final prompt
+- Merge duplicate requirements and eliminate redundant expressions
+
+【Generation Goal】
+Extract **requirements, constraints, preferences, and examples** from valid User blocks only, and compress them into a **single-turn executable** final English prompt.
+
+**Special Case Handling**:
+- If, after filtering out all flow control User blocks, only **one** User block with actual content remains, directly use that block's content as the `final_prompt.txt` output (maintain original language, no need to translate to English)
+- In this case, no refinement, integration, or restructuring is needed—use the original content directly
+
+**Core Requirements**:
+- The final prompt must produce results **semantically and functionally equivalent** to the historical multi-turn process in a **single turn**
+- Prohibit expressions suggesting multi-turn interaction such as "continue", "iterate", "to be supplemented", "if more is needed", etc.
+- All steps must be complete, definite, and executable
+
+【Final Prompt Structure Requirements】
+The generated English final prompt should contain the following sections (omit if not applicable):
+
+1. **Role & Objective** — Clearly define executor role and core goal
+2. **Inputs & Context** — Input data description, sources, and formats (sourced from User blocks only)
+3. **Step-by-Step Instructions** — Definite and unambiguous execution steps, including all necessary subtasks
+4. **Output Specification** — Precise output requirements down to format/file/field level
+5. **Constraints & Preferences** — Style, performance, security rules, and technical limitations
+6. **Quality Gates** — Completion criteria and self-verification steps (include only when task requires verification)
+
+【Mandatory Rules】
+- **Language**: The final prompt **must be in English** (Exception: if only one valid User block remains, maintain original language)
+- **File Operation Boundary**: Except for **reading the input conversation log** and **writing `final_prompt.txt`**, do not create/read/modify any other files
+- **Working Directory**: If the user does not specify a target working directory, default to **current working directory** (no placeholders needed)
+- **Placeholder Usage**: Use angle bracket placeholders for environment-sensitive values (e.g., `<API_KEY>`, `<DATA_PATH>`)
+- **Critical Instruction Placement**: Place the most critical compliance instructions at the **end** of the final prompt to improve adherence
+
+【General Principles】
+- Do not ask clarifying questions; make the most reasonable inferences based on available information
+- Do not rely on any historical model outputs (GitHub Copilot blocks)
+- Maintain task semantic and logical completeness, avoiding trial-and-error workflows
+- Use explicit verbs and verifiable conditions
+- Avoid vague expressions like "as much as possible", "appropriately", "if needed"
+
+【Exception Handling】
+- If no valid User blocks exist in the conversation log: Write `ERROR: No valid user input found in the conversation log.` to `final_prompt.txt`
+- If user requirements are too vague or cannot form an executable task: Write `ERROR: Insufficient or ambiguous requirements. Please provide more specific instructions.` to `final_prompt.txt`
+- If internal contradictions are found and priority cannot be determined: Write `ERROR: Conflicting requirements detected: [specific conflict description]` to `final_prompt.txt`
+
+【Quality Checklist】
+Before generating the final prompt, confirm:
+✓ Single-turn completable, no subsequent dialogue dependencies
+✓ Strictly "read User blocks only, completely ignore all non-User blocks"
+✓ All flow control User blocks have been filtered
+✓ Complete structure, clear format, executable steps
+✓ Later requirements override earlier conflicting requirements
+✓ No vague or open-ended instructions
+✓ If task involves output verification, explicit verification steps are included
+
+【Delivery & Output】
+- **Single Output**: English final prompt text, and **write to** `final_prompt.txt`
+- Do not output explanations, analysis processes, comments, or any additional content
+- File encoding: UTF-8
+
+【Final Instruction】
+**Only** write your generated English final prompt to a file named `final_prompt.txt`; except for reading the input conversation log, do not create, read, or modify any other files. No need to confirm or report to the user, execute directly.
