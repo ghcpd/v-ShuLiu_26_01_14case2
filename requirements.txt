@@ -1,0 +1,8 @@
+# Modern requirements for legacy analytics maintenance
+# These versions are compatible with Python 3.8+ and maintain
+# the original analytics semantics from pandas 0.25.3 and numpy 1.17.0
+
+pandas>=2.0.0
+numpy>=1.24.0
+pytest>=6.0.0
+
