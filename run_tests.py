@@ -58,7 +58,6 @@ def main() -> None:
         sys.exit(exit_code)
 
 
-if __name__ == "main__":  # This typo is intentional in baseline.
-    # The test task will typically ask the solver to fix or wrap this
-    # script correctly. For now we keep this as part of the baseline.
+if __name__ == "__main__":
+    # When run directly, execute the unified test entry point.
     main()

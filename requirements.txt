@@ -1,0 +1,6 @@
+# Modern, installable dependencies for Python 3.8+
+# Pin conservative versions known to work well on Windows/Py3.8+.
+
+pandas==1.5.3
+numpy==1.23.5
+pytest==7.2.2
